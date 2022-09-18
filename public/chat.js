@@ -1,19 +1,38 @@
-let socket = io.connect('http://localhost:4622');
+const socket = io.connect('http://localhost:4623');
+const divVideoChatLobby = document.getElementById('video-chat-lobby');
+// const divVideoChat = document.getElementById('video-chat-room');
+const joinButton = document.getElementById('join');
+const userVideo = document.getElementById('user-video');
+// const peerVideo = document.getElementById('peer-video');
+const roomInput = document.getElementById('room-name');
 
-let message = document.getElementById('message');
-let button = document.getElementById('send');
-let username = document.getElementById('username');
-let output = document.getElementById('output');
-
-button.addEventListener('click', (e) => {
-  socket.emit('sendingMessage',  {
-    message: message.value,
-    username: username.value,
-  });
+joinButton.addEventListener('click', () => {
+  if (roomInput.value === '') {
+    alert('Please enter a room name');
+  } else {
+    socket.emit('join', roomInput.value);
+    const constraints = {
+      audio: false,
+      video: {
+        width: 1280,
+        height: 720,
+      },
+    };
+    navigator.mediaDevices.getUserMedia(constraints)
+      .then(
+        (stream) => {
+          console.log(stream);
+          userVideo.srcObject = stream;
+          userVideo.onloadedmetadata = (e) => {
+            console.log(e);
+            userVideo.play();
+          };
+          divVideoChatLobby.style = 'display:none';
+        },
+      ).catch(
+        (err) => {
+          console.error(`The following error occurred: ${err}`);
+        },
+      );
+  }
 });
-
-
-socket.on('broadcastMessage', (data) => {
-  console.log(data);
-  output.innerHTML += `<p><strong>${data.username}</strong>: ${data.message}</p>`
-})

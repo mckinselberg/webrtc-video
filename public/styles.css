@@ -9,18 +9,13 @@ h2 {
   color: #ffffff;
 }
 
-#chat-app {
+#video-chat-lobby {
   text-align: center;
   max-width: 600px;
   background-color: #141414;
   margin: 30px auto;
 }
 
-#chat-window {
-  height: 400px;
-  overflow: auto;
-  background: #f9f9f9;
-}
 
 #output p {
   padding: 14px 0px;
